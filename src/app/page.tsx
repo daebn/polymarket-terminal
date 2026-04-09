@@ -1,63 +1,100 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-gray-950 text-white">
+      {/* 상단 헤더 */}
+      <header className="border-b border-gray-800 px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-bold text-green-400">⚡ PolyTrader</h1>
+          <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">LIVE</span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="flex items-center gap-4 text-sm text-gray-400">
+          <span>NBA</span>
+          <span>NFL</span>
+          <span>NHL</span>
+          <span>Soccer</span>
+        </div>
+      </header>
+
+      {/* 메인 그리드 — 4패널 */}
+      <main className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* 패널 1 */}
+        <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm text-gray-400">NBA</span>
+            <span className="text-xs text-green-400">LIVE</span>
+          </div>
+          <h3 className="font-bold text-lg mb-2">Lakers vs Celtics</h3>
+          <div className="flex justify-between items-center">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-green-400">62¢</p>
+              <p className="text-xs text-gray-400">Lakers</p>
+            </div>
+            <div className="text-gray-600 text-sm">vs</div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-red-400">38¢</p>
+              <p className="text-xs text-gray-400">Celtics</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 패널 2 */}
+        <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm text-gray-400">NFL</span>
+            <span className="text-xs text-yellow-400">UPCOMING</span>
+          </div>
+          <h3 className="font-bold text-lg mb-2">Chiefs vs Eagles</h3>
+          <div className="flex justify-between items-center">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-green-400">55¢</p>
+              <p className="text-xs text-gray-400">Chiefs</p>
+            </div>
+            <div className="text-gray-600 text-sm">vs</div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-red-400">45¢</p>
+              <p className="text-xs text-gray-400">Eagles</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 패널 3 */}
+        <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm text-gray-400">NHL</span>
+            <span className="text-xs text-green-400">LIVE</span>
+          </div>
+          <h3 className="font-bold text-lg mb-2">Rangers vs Bruins</h3>
+          <div className="flex justify-between items-center">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-green-400">48¢</p>
+              <p className="text-xs text-gray-400">Rangers</p>
+            </div>
+            <div className="text-gray-600 text-sm">vs</div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-red-400">52¢</p>
+              <p className="text-xs text-gray-400">Bruins</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 패널 4 */}
+        <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm text-gray-400">Soccer</span>
+            <span className="text-xs text-yellow-400">UPCOMING</span>
+          </div>
+          <h3 className="font-bold text-lg mb-2">Man City vs Real Madrid</h3>
+          <div className="flex justify-between items-center">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-green-400">41¢</p>
+              <p className="text-xs text-gray-400">Man City</p>
+            </div>
+            <div className="text-gray-600 text-sm">vs</div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-red-400">59¢</p>
+              <p className="text-xs text-gray-400">Real Madrid</p>
+            </div>
+          </div>
         </div>
       </main>
     </div>
