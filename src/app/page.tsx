@@ -1,101 +1,121 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import GamePanel from "@/components/GamePanel";
+import { MarketEvent } from "@/lib/types";
+
 export default function Home() {
+  const [events, setEvents] = useState<MarketEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeTag, setActiveTag] = useState("sports");
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  const tags = [
+    { key: "sports", label: "All Sports" },
+    { key: "nba", label: "NBA" },
+    { key: "nfl", label: "NFL" },
+    { key: "soccer", label: "Soccer" },
+    { key: "nhl", label: "NHL" }
+  ];
+
+useEffect(() => {
+    const fetchMarkets = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/markets?tag=${activeTag}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(data.error || "데이터를 가져올 수 없습니다");
+          return;
+        }
+
+        setEvents(data.markets || []);
+        setLastUpdated(new Date());
+        setError("");
+      } catch {
+        setError("서버에 연결할 수 없습니다");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMarkets();
+
+    // 30초마다 자동 갱신
+    const interval = setInterval(() => {
+      fetchMarkets();
+    }, 30000);
+
+    // 컴포넌트가 사라지면 타이머 정리
+    return () => clearInterval(interval);
+  }, [activeTag]);
+
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       {/* 상단 헤더 */}
       <header className="border-b border-gray-800 px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-bold text-green-400">⚡ PolyTrader</h1>
-          <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">LIVE</span>
+          <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">
+            LIVE
+          </span>
         </div>
-        <div className="flex items-center gap-4 text-sm text-gray-400">
-          <span>NBA</span>
-          <span>NFL</span>
-          <span>NHL</span>
-          <span>Soccer</span>
+        <div className="flex items-center gap-4 text-sm text-gray-500">
+          <span>{events.length}개 마켓</span>
+          {lastUpdated && (
+            <span className="text-xs">
+              갱신: {lastUpdated.toLocaleTimeString("ko-KR")}
+            </span>
+          )}
         </div>
       </header>
 
-      {/* 메인 그리드 — 4패널 */}
-      <main className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* 패널 1 */}
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-gray-400">NBA</span>
-            <span className="text-xs text-green-400">LIVE</span>
-          </div>
-          <h3 className="font-bold text-lg mb-2">Lakers vs Celtics</h3>
-          <div className="flex justify-between items-center">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-green-400">62¢</p>
-              <p className="text-xs text-gray-400">Lakers</p>
-            </div>
-            <div className="text-gray-600 text-sm">vs</div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-red-400">38¢</p>
-              <p className="text-xs text-gray-400">Celtics</p>
-            </div>
-          </div>
-        </div>
+      {/* 카테고리 탭 */}
+      <nav className="border-b border-gray-800 px-6 py-2 flex gap-1 overflow-x-auto">
+        {tags.map(tag => (
+          <button
+            key={tag.key}
+            onClick={() => setActiveTag(tag.key)}
+            className={`px-4 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${
+              activeTag === tag.key
+                ? "bg-green-500 text-white"
+                : "bg-gray-400 hover:bg-gray-800"
+            }`}
+          >
+            {tag.label}
+          </button>
+        ))}
+      </nav>
 
-        {/* 패널 2 */}
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-gray-400">NFL</span>
-            <span className="text-xs text-yellow-400">UPCOMING</span>
-          </div>
-          <h3 className="font-bold text-lg mb-2">Chiefs vs Eagles</h3>
-          <div className="flex justify-between items-center">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-green-400">55¢</p>
-              <p className="text-xs text-gray-400">Chiefs</p>
-            </div>
-            <div className="text-gray-600 text-sm">vs</div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-red-400">45¢</p>
-              <p className="text-xs text-gray-400">Eagles</p>
-            </div>
-          </div>
+      {/* 에러 */}
+      {error && (
+        <div className="mx-4 mt-4 p-3 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-sm">
+          ⚠️ {error}
         </div>
+      )}
 
-        {/* 패널 3 */}
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-gray-400">NHL</span>
-            <span className="text-xs text-green-400">LIVE</span>
-          </div>
-          <h3 className="font-bold text-lg mb-2">Rangers vs Bruins</h3>
-          <div className="flex justify-between items-center">
+      {/* 마켓 그리드 */}
+      <main className="p-4">
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
             <div className="text-center">
-              <p className="text-2xl font-bold text-green-400">48¢</p>
-              <p className="text-xs text-gray-400">Rangers</p>
-            </div>
-            <div className="text-gray-600 text-sm">vs</div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-red-400">52¢</p>
-              <p className="text-xs text-gray-400">Bruins</p>
+              <div className="animate-spin w-8 h-8 border-2 border-green-400 border-t-transparent rounded-full mx-auto mb-4"></div>
+              <p className="text-gray-400">마켓 로딩 중...</p>
             </div>
           </div>
-        </div>
-
-        {/* 패널 4 */}
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-gray-400">Soccer</span>
-            <span className="text-xs text-yellow-400">UPCOMING</span>
+        ) : events.length === 0 ? (
+          <div className="text-center py-20 text-gray-500">
+            현재 활성 마켓이 없습니다
           </div>
-          <h3 className="font-bold text-lg mb-2">Man City vs Real Madrid</h3>
-          <div className="flex justify-between items-center">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-green-400">41¢</p>
-              <p className="text-xs text-gray-400">Man City</p>
-            </div>
-            <div className="text-gray-600 text-sm">vs</div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-red-400">59¢</p>
-              <p className="text-xs text-gray-400">Real Madrid</p>
-            </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4 max-w-6xl mx-auto">
+            {events.map((event) => (
+              <GamePanel key={event.id} event={event} />
+            ))}
           </div>
-        </div>
+        )}
       </main>
     </div>
   );
